@@ -35,3 +35,31 @@ Promise.resolve().then(() => {
 process.nextTick(() => {
   console.log("6, Process nexttick callback (microtask)"); // Executes in the Microtasks queue.
 });
+
+// Poll phase: fs.readFile
+fs.readFile(
+  __filename,
+  "utf8",
+  (err: NodeJS.ErrnoException | null, data: string) => {
+    if (err) {
+      console.error("Error reading file:", err);
+      return;
+    }
+    console.log("7, file reading operation (I/O callback)");
+  }
+);
+
+// CPU-Intensive Task: crypto.pbkdf2
+crypto.pbkdf2(
+  "secret",
+  "salt",
+  10000,
+  64,
+  "sha512",
+  (err: NodeJS.ErrnoException | null, key: Buffer) => {
+    if (err) throw err;
+    console.log("8, pbkdf2 operation has been completed (CPU intensive task)");
+  }
+);
+
+console.log("9, script ends!"); // Synchronous code
